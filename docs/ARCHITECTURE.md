@@ -1,11 +1,11 @@
-# Architecture mobile
+# Mobile Architecture
 
-## Vue d’ensemble
+## Overview
 
-S-Aloha Mobile est une application Expo/React Native en TypeScript. Expo Router utilise les fichiers de `app/` comme routes ; le point d’entrée `app/index.tsx` redirige vers la connexion. Les écrans appellent un client HTTP partagé, tandis que le backend S-Aloha conserve la responsabilité des règles métier et des données.
+S-Aloha Mobile is an Expo/React Native application written in TypeScript. Expo Router uses the files in `app/` as routes; the entry point `app/index.tsx` redirects to login. The shared source is grouped under `src/`.
 
 ```text
-app/index.tsx ──redirect──> app/login.tsx ──authentifie──> app/home.tsx
+app/index.tsx ──redirect──> app/login.tsx ──authenticates──> app/home.tsx
                                   │                             │
                                   └──────────┬──────────────────┘
                                              ▼
@@ -15,44 +15,44 @@ app/index.tsx ──redirect──> app/login.tsx ──authentifie──> app/h
                                       ├── /api/auth/logout
                                       └── /api/incidents
                                              │
-                        ┌────────────────────┴────────────────────┐
-                        ▼                                         ▼
-                 API S-Aloha                          src/session.ts
-                 (serveur parent)                     Expo SecureStore
+                         ┌────────────────────┴────────────────────┐
+                         ▼                                         ▼
+                  S-Aloha API                            src/session.ts
+                  (parent server)                         Expo SecureStore
 ```
 
-## Navigation et écrans
+## Navigation and Screens
 
-- `app/_layout.tsx` configure le navigateur Stack global et la barre d’état.
-- `app/index.tsx` redirige la route racine vers `/login`.
-- `app/login.tsx` recueille les identifiants, appelle `api.login`, stocke le jeton puis remplace la route par `/home`.
-- `app/home.tsx` vérifie la présence d’une session, charge le profil et les incidents, et permet la déconnexion. Une session absente ou expirée renvoie l’utilisateur à la connexion.
+- `app/_layout.tsx` configures the global Stack navigator and status bar.
+- `app/index.tsx` redirects the root route to `/login`.
+- `app/login.tsx` collects credentials, calls `api.login`, stores the token, then replaces the route with `/home`.
+- `app/home.tsx` checks for a session, loads the profile and incidents, and allows logout. A missing or expired session returns the user to login.
 
-Les écrans sont des composants React Native et utilisent `SafeAreaView` pour tenir compte des zones système. Expo Router fournit la navigation déclarative.
+The screens are React Native components and use `SafeAreaView` to account for system areas. Expo Router provides declarative navigation.
 
-## Accès réseau
+## Network Access
 
-`src/api.ts` lit `EXPO_PUBLIC_API_URL` et utilise `http://localhost:5000` comme valeur par défaut. Le client ajoute le préfixe `/api`, l’en-tête `X-S-Aloha: 1`, et l’en-tête `Authorization: Bearer` pour les requêtes nécessitant une session. Les erreurs réseau et réponses HTTP non réussies sont converties en messages d’erreur destinés à l’interface.
+`src/api.ts` reads `EXPO_PUBLIC_API_URL` and uses `http://localhost:5000` as the default. The client adds the `/api` prefix, the `X-S-Aloha: 1` header, and the `Authorization: Bearer` header when a token is available.
 
-Les fonctions `api.me`, `api.incidents` et `api.logout` récupèrent le jeton dans le stockage de session avant d’effectuer les requêtes. Les incidents affichés dans cette version sont en lecture seule et limités aux vingt premiers éléments côté application.
+The `api.me`, `api.incidents`, and `api.logout` functions retrieve the token from session storage before making requests. Incidents are displayed in read-only mode in this version.
 
-## Session et sécurité
+## Session and Security
 
-`src/session.ts` encapsule Expo SecureStore avec les opérations de lecture, d’écriture et de suppression d’un jeton. L’application ne stocke pas le JWT dans AsyncStorage. Le serveur parent reste responsable de valider le jeton et d’appliquer les autorisations. N’inscrivez jamais de secret dans `EXPO_PUBLIC_*` : les variables Expo publiques sont intégrées au client.
+`src/session.ts` wraps Expo SecureStore with read, write, and delete operations for a token. The application does not store the JWT in AsyncStorage. The parent server remains responsible for validating session status and permissions.
 
-Utilisez HTTPS pour les environnements partagés et de production. `localhost` ne convient qu’à un serveur accessible depuis l’environnement de développement ; un appareil physique doit utiliser une adresse joignable sur le réseau.
+Use HTTPS for shared and production environments. `localhost` is only suitable for a server reachable from the development environment; a physical device must use a LAN address or a valid host name.
 
-## Thème et identité
+## Theme and Identity
 
-- `src/theme.ts` contient les couleurs, rayons et références typographiques utilisés par les écrans.
-- `src/BrandMark.tsx` dessine l’emblème vectoriel avec `react-native-svg`.
-- `assets/s-aloha-mark.svg` est l’icône de marque affichée dans le README. Le fichier SVG n’est pas actuellement configuré comme icône native Expo.
+- `src/theme.ts` contains the colors, radii, and typography references used by the screens.
+- `src/BrandMark.tsx` draws the vector emblem with `react-native-svg`.
+- `assets/s-aloha-mark.svg` is the brand icon displayed in the README. It is not currently configured as a native Expo icon.
 
-Le thème référence Geologica et IBM Plex, mais les fichiers de polices natifs ne sont pas livrés ; prévoir des polices de remplacement compatibles avec le système.
+The theme references Geologica and IBM Plex, but native font files are not included; compatible system fallback fonts should be provided.
 
-## Configuration et exécution
+## Configuration and Running
 
-La configuration Expo est dans `app.json`, les scripts et dépendances dans `package.json`, et les chemins TypeScript dans `tsconfig.json`. Consultez le README pour le démarrage rapide et `.env.example` pour le nom de la variable d’URL API.
+Expo configuration is in `app.json`, scripts and dependencies are in `package.json`, and TypeScript paths are in `tsconfig.json`. See the README for the quick start and `.env.example` for the local environment variable.
 
 ```bash
 cp .env.example .env
@@ -62,6 +62,6 @@ npm run typecheck
 npm run start
 ```
 
-## Limites actuelles
+## Current Limitations
 
-L’application ne prend pas en charge les modifications d’incidents, les notifications push, le fonctionnement hors ligne ni le renouvellement autonome des jetons. Il n’y a pas encore de suite de tests automatisés ou de pipeline de publication configuré dans le dépôt.
+The application does not support incident editing, push notifications, offline operation, or automatic token renewal. A full automated test suite and store publication process are not yet included.

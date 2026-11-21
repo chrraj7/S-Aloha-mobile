@@ -1,57 +1,53 @@
-<p align="center">
-  <img src="./assets/s-aloha-mark.svg" alt="S-Aloha Mobile" width="112" height="112" />
-</p>
+# S-Aloha Mobile
 
-<h1 align="center">S-Aloha Mobile</h1>
-
-<p align="center"><strong>Le service IT, partout.</strong></p>
+<p align="center"><strong>IT service, everywhere.</strong></p>
 
 <p align="center">
-  Application mobile iOS et Android de <a href="https://github.com/chrraj7/S-Aloha">S-Aloha</a>, la plateforme ITIL 4 libre et on-prem pour les équipes IT.
+  Mobile iOS and Android application for <a href="https://github.com/chrraj7/S-Aloha">S-Aloha</a>, the open, on-premises ITIL 4 platform for IT teams.
 </p>
 
 <p align="center">
-  <a href="https://github.com/chrraj7/S-Aloha-mobiles/blob/main/LICENSE"><img alt="License: AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg"></a>
+  <a href="https://github.com/chrraj7/S-Aloha-mobile/blob/main/LICENSE"><img alt="License: AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg"></a>
   <img alt="Expo SDK 58" src="https://img.shields.io/badge/Expo-SDK%2058-4630EB.svg">
   <img alt="React Native 0.88" src="https://img.shields.io/badge/React%20Native-0.88-61DAFB.svg">
   <img alt="TypeScript 5.9" src="https://img.shields.io/badge/TypeScript-5.9-3178C6.svg">
 </p>
 
 <p align="center">
-  <a href="https://github.com/chrraj7/S-Aloha">Projet parent</a> ·
-  <a href="https://github.com/chrraj7/S-Aloha/blob/main/docs/reference/produit.md">Produit</a> ·
-  <a href="docs/ARCHITECTURE.md">Architecture mobile</a> ·
-  <a href="https://github.com/chrraj7/S-Aloha/blob/main/docs/reference/securite.md">Sécurité</a>
+  <a href="https://github.com/chrraj7/S-Aloha">Parent project</a> ·
+  <a href="https://github.com/chrraj7/S-Aloha/blob/main/docs/reference/product.md">Product</a> ·
+  <a href="docs/ARCHITECTURE.md">Mobile architecture</a> ·
+  <a href="https://github.com/chrraj7/S-Aloha/blob/main/docs/reference/security.md">Security</a>
 </p>
 
-## À propos
+## About
 
-S-Aloha Mobile est un client Expo pour consulter les incidents et accéder à son compte S-Aloha. L’API du projet parent reste l’autorité pour les sessions, rôles, règles métier et données. L’application ne propose actuellement pas de modification des enregistrements.
+S-Aloha Mobile is an Expo client for reviewing incidents and accessing an S-Aloha account. The parent project API remains the authority for sessions, roles, business rules, and data.
 
-## Fonctionnalités
+## Features
 
-- Connexion avec un compte Active Directory via `POST /api/auth/login`.
-- Stockage du jeton de session avec Expo SecureStore.
-- Restauration et fermeture de session avec `GET /api/auth/me` et `POST /api/auth/logout`.
-- Consultation en lecture seule des incidents récents via `GET /api/incidents`.
-- En-tête `Authorization: Bearer` et en-tête applicatif `X-S-Aloha: 1` sur les appels API.
+- Sign in with an Active Directory account through `POST /api/auth/login`.
+- Store the session token with Expo SecureStore.
+- Restore and end sessions with `GET /api/auth/me` and `POST /api/auth/logout`.
+- View recent incidents in read-only mode through `GET /api/incidents`.
+- Send `Authorization: Bearer` and the application `X-S-Aloha: 1` headers with API calls.
 
-## Démarrage rapide
+## Quick Start
 
-**Prérequis :** Node.js et npm, une instance S-Aloha accessible, et Expo Go ou un simulateur iOS/Android.
+**Requirements:** Node.js and npm, an accessible S-Aloha instance, and Expo Go or an iOS/Android simulator.
 
 ```bash
-git clone https://github.com/chrraj7/S-Aloha-mobiles.git
-cd S-Aloha-mobiles
+git clone https://github.com/chrraj7/S-Aloha-mobile.git
+cd S-Aloha-mobile
 cp .env.example .env
 npm install
 npx expo install --check
 npm run start
 ```
 
-Configurez `EXPO_PUBLIC_API_URL` dans `.env` avec l’URL de votre instance S-Aloha (par défaut : `http://localhost:5000`). Pour un appareil physique, utilisez une adresse IP ou un nom d’hôte joignable depuis le téléphone : `localhost` désigne le téléphone lui-même.
+Set `EXPO_PUBLIC_API_URL` in `.env` to the URL of your S-Aloha instance (default: `http://localhost:5000`). On a physical device, use an IP address or host name reachable from the device.
 
-Pour lancer directement un environnement :
+To start an environment directly:
 
 ```bash
 npm run ios
@@ -59,37 +55,37 @@ npm run android
 npm run web
 ```
 
-## Scripts utiles
+## Useful Scripts
 
-| Commande | Description |
+| Command | Description |
 |---|---|
-| `npm run start` | Démarre Expo et affiche les options de lancement. |
-| `npm run ios` | Démarre Expo avec le simulateur iOS. |
-| `npm run android` | Démarre Expo avec l’émulateur Android. |
-| `npm run web` | Démarre l’application web. |
-| `npm run typecheck` | Vérifie les types TypeScript sans générer de fichiers. |
+| `npm run start` | Starts Expo and displays launch options. |
+| `npm run ios` | Starts Expo with the iOS simulator. |
+| `npm run android` | Starts Expo with the Android emulator. |
+| `npm run web` | Starts Expo for the web. |
+| `npm run typecheck` | Checks TypeScript types without generating files. |
 
-## Organisation
+## Organization
 
 ```text
-app/                 Routes Expo Router : connexion, accueil et layout
-src/                 Client API, session sécurisée, identité de marque et thème
-assets/              Ressources de marque partagées (icône SVG du README)
-docs/                Architecture et documentation de contribution
-.env.example         Exemple de configuration locale
-app.json             Configuration Expo et identifiants natifs
+app/                 Expo Router routes: login, home, and layout
+src/                 API client, secure session, brand identity, and theme
+assets/              Shared brand resources (SVG icon in README)
+docs/                Architecture and contribution documentation
+.env.example         Example local configuration
+app.json             Expo configuration and native identifiers
 ```
 
-Voir [Architecture mobile](docs/ARCHITECTURE.md) pour les flux de navigation, d’authentification et d’accès à l’API, ainsi que [Contribuer](CONTRIBUTING.md) pour les contrôles avant soumission.
+See [Mobile Architecture](docs/ARCHITECTURE.md) for navigation, authentication, and API access flows, and [Contributing](CONTRIBUTING.md) for checks before submission.
 
-## Identité visuelle
+## Visual Identity
 
-Les couleurs de l’application reprennent la palette S-Aloha et sont définies dans [`src/theme.ts`](src/theme.ts). L’emblème mobile est dessiné en SVG dans [`src/BrandMark.tsx`](src/BrandMark.tsx). Les polices natives Geologica et IBM Plex ne sont pas incluses à ce jour : les systèmes mobiles utilisent leurs polices de remplacement.
+The application colors follow the S-Aloha palette and are defined in [`src/theme.ts`](src/theme.ts). The mobile emblem is drawn in SVG in [`src/BrandMark.tsx`](src/BrandMark.tsx).
 
-## État du projet
+## Project Status
 
-Cette version est un socle mobile. La modification des incidents, les notifications push, le mode hors ligne, les tests automatisés et la publication sur les stores restent à concevoir.
+This version is a mobile foundation. Editing incidents, push notifications, offline mode, automated tests, and store publication remain to be implemented.
 
-## Licence
+## License
 
-AGPL-3.0-or-later. Consultez [`LICENSE`](LICENSE) et la licence du [projet parent](https://github.com/chrraj7/S-Aloha).
+AGPL-3.0-or-later. See [`LICENSE`](LICENSE) and the [parent project](https://github.com/chrraj7/S-Aloha) license.
