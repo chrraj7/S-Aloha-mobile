@@ -9,6 +9,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "build": "expo export --platform web",
+    "check": "npm run typecheck && npm run build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
