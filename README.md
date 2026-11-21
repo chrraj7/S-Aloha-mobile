@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/s-aloha-mark.svg" alt="S-Aloha Mobile" width="112" height="112" />
+</p>
+
 # S-Aloha Mobile
 
 <p align="center"><strong>IT service, everywhere.</strong></p>
