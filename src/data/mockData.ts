@@ -1,0 +1,180 @@
+import {
+  CmdbiItem,
+  Nis2Control,
+  NotificationItem,
+  PerimeterItem,
+  Ticket,
+} from '../types/saloha';
+
+export const MOCK_PERIMETERS: PerimeterItem[] = [
+  {
+    id: 'per-siege',
+    code: 'PER-IDF-01',
+    name: 'Siege & Datacenter On-Prem',
+    inService: true,
+    criticality: 'Essentiel',
+  },
+  {
+    id: 'per-agences',
+    code: 'PER-REG-02',
+    name: 'Agences & Sites Distants',
+    inService: true,
+    criticality: 'Important',
+  },
+];
+
+export const MOCK_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: 'notif-1',
+    title: 'Escalade SLA critique — INC-2026-1042',
+    message: 'Latence LDAP detectee sur DC-PARIS-02.corp.local.',
+    read: false,
+    createdAt: 'Il y a 10 min',
+  },
+  {
+    id: 'notif-2',
+    title: 'Approbation CAB — CHG-2026-0308',
+    message: 'Mise a jour firmware FW-EDGE-01 planifiee dimanche.',
+    read: false,
+    createdAt: 'Il y a 40 min',
+  },
+  {
+    id: 'notif-3',
+    title: 'Controle NIS 2 verifie — NIS2-IAM-03',
+    message: 'Revue des privileges AD validee a 95%.',
+    read: true,
+    createdAt: 'Hier',
+  },
+];
+
+export const MOCK_TICKETS: Ticket[] = [
+  {
+    id: 'inc-1042',
+    reference: 'INC-2026-1042',
+    title: 'Latence authentification AD sur site distant',
+    description: 'Plusieurs postes Windows signalent un delai de connexion LDAP superieur a 8s.',
+    type: 'incident',
+    priority: 'P1 - Critique',
+    status: 'En cours',
+    perimeterId: 'per-siege',
+    slaDeadline: 'Dans 1h 20m',
+    assignee: 'Equipe Infra & AD',
+    ciName: 'DC-PARIS-02.corp.local',
+    updatedAt: 'Il y a 12 min',
+    comments: [
+      {
+        id: 'c-1',
+        author: 'Astreinte Infra',
+        body: 'Verification replication SYSVOL et charge CPU sur DC-PARIS-02 en cours.',
+        createdAt: 'Il y a 8 min',
+      },
+    ],
+  },
+  {
+    id: 'chg-308',
+    reference: 'CHG-2026-0308',
+    title: 'Mise a jour firmware pare-feu perimeter',
+    description: 'Fenetre de maintenance approuvee CAB pour correction securite.',
+    type: 'changement',
+    priority: 'P2 - Eleve',
+    status: 'En attente',
+    perimeterId: 'per-siege',
+    slaDeadline: 'Dimanche 02:00',
+    assignee: 'SecOps On-Prem',
+    ciName: 'FW-EDGE-01',
+    updatedAt: 'Il y a 45 min',
+    comments: [],
+  },
+  {
+    id: 'dem-889',
+    reference: 'DEM-2026-0889',
+    title: 'Provisionnement acces VPN prestataire',
+    description: 'Creation compte temporaire et rattachement groupe securite.',
+    type: 'demande',
+    priority: 'P3 - Moyen',
+    status: 'Nouveau',
+    perimeterId: 'per-agences',
+    slaDeadline: 'Dans 6h',
+    assignee: 'Service Desk N1',
+    ciName: 'VPN-GW-01',
+    updatedAt: 'Il y a 1h',
+    comments: [],
+  },
+  {
+    id: 'prb-091',
+    reference: 'PRB-2026-0091',
+    title: 'Saturation IOPS sur baie stockage sauvegarde',
+    description: 'Analyse cause racine en cours avec l equipe stockage.',
+    type: 'probleme',
+    priority: 'P2 - Eleve',
+    status: 'En cours',
+    perimeterId: 'per-siege',
+    slaDeadline: 'Demain 18:00',
+    assignee: 'Equipe Stockage',
+    ciName: 'SAN-BACKUP-01',
+    updatedAt: 'Il y a 3h',
+    comments: [],
+  },
+];
+
+export const MOCK_CMDB: CmdbiItem[] = [
+  {
+    id: 'ci-1',
+    name: 'DC-PARIS-02.corp.local',
+    category: 'Serveur',
+    environment: 'Production',
+    status: 'Degrade',
+    ipOrHost: '10.20.4.12',
+  },
+  {
+    id: 'ci-2',
+    name: 'FW-EDGE-01',
+    category: 'Reseau',
+    environment: 'On-Prem',
+    status: 'Operationnel',
+    ipOrHost: '10.20.0.1',
+  },
+  {
+    id: 'ci-3',
+    name: 'SALOHA-CORE-01',
+    category: 'Application',
+    environment: 'Production',
+    status: 'Operationnel',
+    ipOrHost: '10.20.10.50',
+  },
+  {
+    id: 'ci-4',
+    name: 'SAN-BACKUP-01',
+    category: 'Stockage',
+    environment: 'On-Prem',
+    status: 'Maintenance',
+    ipOrHost: '10.20.99.5',
+  },
+];
+
+export const MOCK_NIS2: Nis2Control[] = [
+  {
+    id: 'nis-1',
+    code: 'NIS2-GOV-01',
+    label: 'Gouvernance & cartographie des actifs critiques (ReCyF)',
+    domain: 'Gouvernance & Risques',
+    complianceScore: 92,
+    lastAudit: '14/11/2026',
+  },
+  {
+    id: 'nis-2',
+    code: 'NIS2-INC-02',
+    label: 'Detection, escalade et notification d incidents significatifs',
+    domain: 'Gestion des incidents',
+    complianceScore: 88,
+    lastAudit: '10/11/2026',
+  },
+  {
+    id: 'nis-3',
+    code: 'NIS2-IAM-03',
+    label: 'Controle d acces Active Directory & moindre privilege',
+    domain: 'Identites & Acces',
+    complianceScore: 95,
+    lastAudit: '18/11/2026',
+  },
+];
