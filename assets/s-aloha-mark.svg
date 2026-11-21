@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="112" viewBox="0 0 112 112" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Emblème S-Aloha</title>
+  <desc id="desc">Un S turquoise et bleu dans un hexagone bleu nuit.</desc>
+  <defs>
+    <linearGradient id="brand" x1="56" y1="24" x2="56" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4AA8FF" />
+      <stop offset="1" stop-color="#2FE0B5" />
+    </linearGradient>
+  </defs>
+  <rect width="112" height="112" rx="25" fill="#070D1A" />
+  <path d="M56 10 96 33v46L56 102 16 79V33L56 10Z" stroke="#4AA8FF" stroke-opacity=".42" stroke-width="2.5" />
+  <path d="m73 34-17-10-17 10v15l17 10 17 10v15L56 94 39 84" stroke="url(#brand)" stroke-linecap="round" stroke-linejoin="round" stroke-width="7" />
+  <path d="m81 27 5 5-5 5-5-5 5-5Z" fill="#2FE0B5" />
+</svg>
