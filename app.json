@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "S-Aloha Mobile",
+    "slug": "s-aloha-mobile",
+    "scheme": "saloha",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "fr.saloha.mobile"
+    },
+    "android": {
+      "package": "fr.saloha.mobile"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
