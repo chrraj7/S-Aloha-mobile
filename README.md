@@ -21,6 +21,7 @@
   <a href="https://github.com/chrraj7/S-Aloha">Parent project</a> ·
   <a href="https://github.com/chrraj7/S-Aloha/blob/main/docs/reference/product.md">Product</a> ·
   <a href="docs/ARCHITECTURE.md">Mobile architecture</a> ·
+  <a href="docs/roadmap.md">Roadmap</a> ·
   <a href="https://github.com/chrraj7/S-Aloha/blob/main/docs/reference/security.md">Security</a>
 </p>
 
@@ -75,12 +76,12 @@ npm run web
 app/                 Expo Router routes: login, home, and layout
 src/                 API client, secure session, brand identity, and theme
 assets/              Shared brand resources (SVG icon in README)
-docs/                Architecture and contribution documentation
+docs/                Architecture, contribution documentation, and roadmap
 .env.example         Example local configuration
 app.json             Expo configuration and native identifiers
 ```
 
-See [Mobile Architecture](docs/ARCHITECTURE.md) for navigation, authentication, and API access flows, and [Contributing](CONTRIBUTING.md) for checks before submission.
+See [Mobile Architecture](docs/ARCHITECTURE.md), [Contributing](docs/CONTRIBUTING.md), and the [Roadmap](docs/roadmap.md) for documentation. The roadmap tracks planned work and future priorities.
 
 ## Visual Identity
 
