@@ -3,6 +3,8 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleShee
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { api } from '../src/api';
+import { BrandMark } from '../src/BrandMark';
+import { colors, radius, typography } from '../src/theme';
 import { saveToken } from '../src/session';
 
 export default function LoginScreen() {
@@ -13,35 +15,40 @@ export default function LoginScreen() {
   const [busy, setBusy] = useState(false);
 
   async function submit() {
-    setError('');
-    setBusy(true);
+    setError(''); setBusy(true);
     try {
       const result = await api.login(username.trim(), password);
       await saveToken(result.token);
       router.replace('/home');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Connexion impossible.');
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   }
 
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView style={styles.page} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <View style={styles.brand}><Text style={styles.mark}>S</Text><Text style={styles.brandName}>S-Aloha</Text></View>
-        <Text style={styles.kicker}>SERVICE DESK · ITIL 4</Text>
-        <Text style={styles.title}>Le service, partout.</Text>
-        <Text style={styles.subtitle}>Connectez-vous avec votre compte Active Directory.</Text>
-        <View style={styles.form}>
+        <View style={styles.header}>
+          <BrandMark size={46} />
+          <View><Text style={styles.brand}>S-Aloha</Text><Text style={styles.brandSub}>Plateforme ITIL</Text></View>
+        </View>
+        <View style={styles.intro}>
+          <Text style={styles.kicker}>PLATEFORME ITIL DE LA DSI</Text>
+          <Text style={styles.title}>Piloter le service IT, de l’incident à l’amélioration.</Text>
+          <View style={styles.motto}><Text style={styles.mottoMg}>« Service alohan’ny zavatra rehetra »</Text><Text style={styles.mottoFr}>Le service avant toute chose.</Text></View>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.formTitle}>Connexion</Text>
+          <Text style={styles.formSubtitle}>Avec votre compte Active Directory.</Text>
           <Text style={styles.label}>Identifiant</Text>
-          <TextInput autoCapitalize="none" autoCorrect={false} onChangeText={setUsername} placeholder="nom d’utilisateur" placeholderTextColor="#8794a7" style={styles.input} value={username} returnKeyType="next" />
+          <TextInput autoCapitalize="none" autoCorrect={false} onChangeText={setUsername} placeholder="prenom.nom" placeholderTextColor={colors.tertiary} style={styles.input} value={username} returnKeyType="next" />
           <Text style={styles.label}>Mot de passe</Text>
-          <TextInput onChangeText={setPassword} placeholder="Mot de passe" placeholderTextColor="#8794a7" secureTextEntry style={styles.input} value={password} onSubmitEditing={submit} returnKeyType="go" />
+          <TextInput onChangeText={setPassword} placeholder="Mot de passe" placeholderTextColor={colors.tertiary} secureTextEntry style={styles.input} value={password} onSubmitEditing={submit} returnKeyType="go" />
           {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
           <Pressable accessibilityRole="button" disabled={busy || !username || !password} onPress={submit} style={({ pressed }) => [styles.button, (busy || !username || !password) && styles.disabled, pressed && styles.pressed]}>
-            {busy ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Se connecter</Text>}
+            {busy ? <ActivityIndicator color={colors.nav} /> : <Text style={styles.buttonText}>Se connecter</Text>}
           </Pressable>
+          <Text style={styles.source}>Code source · AGPLv3</Text>
         </View>
         <Text style={styles.footer}>Vos identifiants sont vérifiés par l’annuaire de votre organisation.</Text>
       </KeyboardAvoidingView>
@@ -50,9 +57,26 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#f5f7fb' }, page: { flex: 1, justifyContent: 'center', paddingHorizontal: 26, paddingVertical: 28 },
-  brand: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 52 }, mark: { overflow: 'hidden', borderRadius: 13, backgroundColor: '#125cdb', color: '#fff', fontSize: 24, fontWeight: '800', textAlign: 'center', textAlignVertical: 'center', width: 48, height: 48 },
-  brandName: { color: '#13213a', fontSize: 23, fontWeight: '800' }, kicker: { color: '#125cdb', fontSize: 12, fontWeight: '800', letterSpacing: 1.5, marginBottom: 12 }, title: { color: '#13213a', fontSize: 34, fontWeight: '800', letterSpacing: -1 }, subtitle: { color: '#627087', fontSize: 16, lineHeight: 24, marginTop: 10, maxWidth: 330 },
-  form: { marginTop: 34 }, label: { color: '#263650', fontSize: 14, fontWeight: '700', marginBottom: 8, marginTop: 14 }, input: { backgroundColor: '#fff', borderColor: '#dce3ed', borderRadius: 12, borderWidth: 1, color: '#13213a', fontSize: 16, paddingHorizontal: 15, paddingVertical: 15 },
-  button: { alignItems: 'center', backgroundColor: '#125cdb', borderRadius: 12, justifyContent: 'center', marginTop: 24, minHeight: 54 }, buttonText: { color: '#fff', fontSize: 16, fontWeight: '800' }, disabled: { opacity: 0.5 }, pressed: { opacity: 0.8 }, error: { color: '#b42318', fontSize: 14, marginTop: 14 }, footer: { color: '#758198', fontSize: 13, lineHeight: 20, marginTop: 30 }
+  safe: { flex: 1, backgroundColor: colors.app },
+  page: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 28 },
+  header: { alignItems: 'center', flexDirection: 'row', gap: 12, marginBottom: 34 },
+  brand: { color: colors.text, fontFamily: typography.display, fontSize: 22, fontWeight: '600', letterSpacing: 0.2 },
+  brandSub: { color: colors.tertiary, fontFamily: typography.body, fontSize: 12, marginTop: 3 },
+  intro: { marginBottom: 24 },
+  kicker: { color: colors.accentTeal, fontFamily: typography.body, fontSize: 11, fontWeight: '700', letterSpacing: 1.4, marginBottom: 10 },
+  title: { color: colors.text, fontFamily: typography.display, fontSize: 27, fontWeight: '500', lineHeight: 35, letterSpacing: -0.5 },
+  motto: { borderLeftColor: colors.accentTeal, borderLeftWidth: 2, marginTop: 18, paddingLeft: 12 },
+  mottoMg: { color: colors.text, fontFamily: typography.body, fontSize: 14, fontStyle: 'italic' },
+  mottoFr: { color: colors.secondary, fontFamily: typography.body, fontSize: 12, marginTop: 3 },
+  card: { backgroundColor: colors.surface, borderColor: colors.border, borderRadius: radius.panel, borderWidth: 1, padding: 22 },
+  formTitle: { color: colors.text, fontFamily: typography.display, fontSize: 20, fontWeight: '500' },
+  formSubtitle: { color: colors.secondary, fontFamily: typography.body, fontSize: 13, marginBottom: 18, marginTop: 5 },
+  label: { color: colors.secondary, fontFamily: typography.body, fontSize: 13, fontWeight: '600', marginBottom: 6, marginTop: 12 },
+  input: { backgroundColor: colors.app, borderColor: colors.borderStrong, borderRadius: radius.control, borderWidth: 1, color: colors.text, fontFamily: typography.body, fontSize: 15, paddingHorizontal: 12, paddingVertical: 13 },
+  button: { alignItems: 'center', backgroundColor: colors.accentBlue, borderColor: colors.accentBlue, borderRadius: radius.control, borderWidth: 1, justifyContent: 'center', marginTop: 20, minHeight: 48 },
+  buttonText: { color: '#04101f', fontFamily: typography.body, fontSize: 14, fontWeight: '700' },
+  disabled: { opacity: 0.5 }, pressed: { opacity: 0.8 },
+  error: { backgroundColor: colors.accentRedSoft, borderColor: colors.accentRed, borderLeftWidth: 3, borderRadius: radius.control, color: colors.text, fontFamily: typography.body, fontSize: 13, marginTop: 14, padding: 11 },
+  source: { color: colors.tertiary, fontFamily: typography.body, fontSize: 12, marginTop: 18, textAlign: 'center' },
+  footer: { color: colors.tertiary, fontFamily: typography.body, fontSize: 12, lineHeight: 18, marginTop: 20, textAlign: 'center' },
 });
