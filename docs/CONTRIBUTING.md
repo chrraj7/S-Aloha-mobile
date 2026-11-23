@@ -19,13 +19,13 @@ npm run check
 
 Add or upgrade Expo-managed packages with `npx expo install <package>` rather than `npm install`, so versions stay aligned with the SDK, and commit the updated `package-lock.json`.
 
-Open a pull request from a branch: `main` is protected and only accepts pull requests whose required checks are green (type-check and build, DCO, workflows, dependency review, CodeQL without high alerts), merged with a linear history. Describe the observed and expected behavior. For interface changes, add iOS or Android screenshots when possible. Never attach tokens or secrets; report vulnerabilities as described in the [security policy](SECURITY.md).
+Open a pull request from a branch: `main` is protected and only accepts pull requests whose required checks are green (type-check and build, DCO, workflows, dependency review, hygiene, CodeQL without high alerts), merged with a linear history. Describe the observed and expected behavior. For interface changes, add iOS or Android screenshots when possible. Never attach tokens or secrets; report vulnerabilities as described in the [security policy](SECURITY.md).
 
 ## Developer Certificate of Origin (DCO)
 
 Every commit carries the line `Signed-off-by: Your Name <address>`, added by `git commit -s`, at the address of the commit author. With this sign-off, you certify that you have the right to submit your contribution under the project license, according to the [Developer Certificate of Origin 1.1](https://developercertificate.org/). You keep your rights; no copyright assignment is requested. The parent project follows the same rule.
 
-Forgot it on the last commit: `git commit --amend -s --no-edit`, then `git push --force-with-lease` on your branch. To sign every commit of the branch afterwards: `git rebase --signoff main`. The **DCO** job of the CI blocks the merge of an unsigned commit.
+Forgot it on the last commit: `git commit --amend -s --no-edit`, then `git push --force-with-lease` on your branch. To sign every commit of the branch afterwards: `git rebase --signoff main`. The **DCO** job of the CI blocks the merge of an unsigned commit. `Signed-off-by` is the only trailer allowed: the **Hygiene** job refuses any other (co-author, session link...).
 
 ## Project Conventions
 

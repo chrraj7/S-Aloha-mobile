@@ -81,7 +81,8 @@ app/                 Expo Router routes: entry, login, home, and layout
 src/                 API client, secure session, brand mark, and theme
 assets/              Brand resources (SVG emblem shown in this README)
 docs/                Architecture, contribution guide, security policy, and roadmap
-.github/workflows/   CI (build, DCO, workflows, dependency review) and CodeQL
+.github/workflows/   CI (build, DCO, workflows, dependency review, hygiene), CodeQL, comments
+scripts/             Hygiene check and footer removal used by the workflows
 .env.example         Example local configuration
 app.json             Expo configuration and native identifiers
 ```

@@ -1,7 +1,8 @@
 # Checks for every push to main and every pull request: TypeScript types, dependency
 # alignment with the Expo SDK, and a web export that proves the app bundles; DCO sign-off
 # of each commit; workflow lint and security. On a pull request, also: review of added or
-# changed dependencies (vulnerabilities, licenses). Same rules as the parent S-Aloha
+# changed dependencies (vulnerabilities, licenses) and hygiene (trailers, reserved terms).
+# Same rules as the parent S-Aloha
 # repository. Actions are pinned by SHA; read-only token.
 name: CI
 
@@ -109,3 +110,23 @@ jobs:
           fail-on-severity: high
           deny-licenses: SSPL-1.0, BUSL-1.1, Elastic-2.0, CC-BY-NC-4.0, CC-BY-NC-SA-4.0
           comment-summary-in-pr: never
+
+  hygiene:
+    # Blocking (--strict, required check on main), as in the parent repository: trailers
+    # other than Signed-off-by, reserved terms (list in the HYGIENE_TERMES secret, never
+    # printed). scripts/check-hygiene.py.
+    name: Hygiene
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Trailers and reserved terms
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          HYGIENE_TERMES: ${{ secrets.HYGIENE_TERMES }}
+        run: python3 scripts/check-hygiene.py "$BASE" "$HEAD" --strict
