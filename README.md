@@ -81,7 +81,7 @@ app/                 Expo Router routes: entry, login, home, and layout
 src/                 API client, secure session, brand mark, and theme
 assets/              Brand resources (SVG emblem shown in this README)
 docs/                Architecture, contribution guide, security policy, and roadmap
-.github/workflows/   CI: type-check, dependency check, and web export
+.github/workflows/   CI (build, DCO, workflows, dependency review) and CodeQL
 .env.example         Example local configuration
 app.json             Expo configuration and native identifiers
 ```
@@ -96,7 +96,7 @@ This version is a mobile foundation. Editing incidents, push notifications, offl
 
 ## Contributing and Security
 
-Read the [contribution guide](docs/CONTRIBUTING.md). Report vulnerabilities privately as described in the [security policy](docs/SECURITY.md), never in a public issue.
+Read the [contribution guide](docs/CONTRIBUTING.md): every commit is signed off (`git commit -s`, DCO) and reaches `main` through a pull request with green checks. Report vulnerabilities privately as described in the [security policy](docs/SECURITY.md), never in a public issue.
 
 ## License
 

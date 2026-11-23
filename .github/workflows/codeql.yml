@@ -1,0 +1,45 @@
+# CodeQL in advanced setup, as in the parent S-Aloha repository: actions and
+# JavaScript/TypeScript, no build (build-mode none), default query suite. It analyzes every
+# pull request to main (forks included), every push to main, and main every week. The
+# "code scanning results" rule of main relies on it; GitHub's default setup must stay
+# disabled, since it blocks results uploaded by any CodeQL workflow.
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '47 6 * * 4'
+
+permissions:
+  contents: read
+
+# On a pull request, a new push cancels the running analysis; on main, each commit keeps its own.
+concurrency:
+  group: codeql-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [actions, javascript-typescript]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      - uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          category: /language:${{ matrix.language }}

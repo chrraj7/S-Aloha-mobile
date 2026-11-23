@@ -62,7 +62,7 @@ npm run check
 npm run start
 ```
 
-The CI (`.github/workflows/ci.yml`) runs `npm ci` and `npm run check` on every push to `main` and every pull request.
+The CI (`.github/workflows/ci.yml`) runs `npm ci` and `npm run check` on every push to `main` and every pull request, with the DCO, workflow (actionlint, zizmor) and dependency review checks; `.github/workflows/codeql.yml` runs CodeQL. These are the checks that `main` requires, as in the parent repository.
 
 ## Current Limitations
 

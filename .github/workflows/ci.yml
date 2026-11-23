@@ -1,6 +1,8 @@
 # Checks for every push to main and every pull request: TypeScript types, dependency
-# alignment with the Expo SDK, and a web export that proves the app bundles.
-# Actions are pinned by SHA, as in the parent S-Aloha repository; read-only token.
+# alignment with the Expo SDK, and a web export that proves the app bundles; DCO sign-off
+# of each commit; workflow lint and security. On a pull request, also: review of added or
+# changed dependencies (vulnerabilities, licenses). Same rules as the parent S-Aloha
+# repository. Actions are pinned by SHA; read-only token.
 name: CI
 
 on:
@@ -32,3 +34,78 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+
+  dco:
+    # On a pull request: the commits of the branch. On main: the commits brought by the
+    # merge, because a squash whose message was rewritten can lose its Signed-off-by.
+    name: DCO
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Author's Signed-off-by on every commit
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          fail=0
+          for c in $(git rev-list --no-merges "$BASE..$HEAD"); do
+            email=$(git log -1 --format=%ae "$c")
+            # Bots (Dependabot) do not sign: they contribute no authored code.
+            case "$email" in *"[bot]@users.noreply.github.com") continue ;; esac
+            if git log -1 --format=%B "$c" | git interpret-trailers --parse \
+                 | grep -i "^signed-off-by:" | grep -qF "<$email>"; then
+              echo "✔ $(git log -1 --format='%h %s' "$c")"
+            else
+              echo "::error::Commit $(git log -1 --format='%h (%s)' "$c") has no Signed-off-by for <$email>"
+              fail=1
+            fi
+          done
+          if [ "$fail" = 1 ]; then
+            if [ "$GITHUB_EVENT_NAME" = push ]; then
+              echo "Merged without sign-off: main is never rewritten."
+            else
+              echo "Sign your commits: git commit -s (see docs/CONTRIBUTING.md, Developer Certificate of Origin)."
+              echo "To fix the branch: git rebase --signoff $BASE then git push --force-with-lease."
+            fi
+          fi
+          exit $fail
+
+  workflows:
+    # Workflows in .github/: syntax and expressions (actionlint), security (zizmor:
+    # injection, triggers, permissions). Tools pinned by version and checksum.
+    name: Workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: actionlint 1.7.12
+        run: |
+          curl -sSfL -o actionlint.tgz https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  actionlint.tgz" | sha256sum -c -
+          tar xzf actionlint.tgz actionlint
+          ./actionlint -color
+      - name: zizmor 1.31.1
+        run: |
+          pip download --quiet --no-deps --only-binary=:all: -d whl zizmor==1.31.1
+          echo "58e878eb2dbd2c6183c105e1ac28c14f7dd1eca44a783f1fe2a69647d012c410  whl/zizmor-1.31.1-py3-none-manylinux_2_28_x86_64.whl" | sha256sum -c -
+          python3 -m zipfile -e whl/zizmor-1.31.1-py3-none-manylinux_2_28_x86_64.whl zizmor-whl
+          chmod +x zizmor-whl/zizmor-1.31.1.data/scripts/zizmor
+          zizmor-whl/zizmor-1.31.1.data/scripts/zizmor --offline --format github .github/workflows/
+
+  dependencies:
+    # Dependencies added or changed by the pull request: high or critical vulnerability,
+    # or license incompatible with the AGPLv3, refused.
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
+        with:
+          fail-on-severity: high
+          deny-licenses: SSPL-1.0, BUSL-1.1, Elastic-2.0, CC-BY-NC-4.0, CC-BY-NC-SA-4.0
+          comment-summary-in-pr: never
