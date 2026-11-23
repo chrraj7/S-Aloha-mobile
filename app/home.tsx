@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { api, type Incident } from '../src/api';
+import { api, ApiError, type Incident } from '../src/api';
 import { BrandMark } from '../src/brandMark';
 import { colors, radius, typography } from '../src/theme';
-import { clearToken, getToken } from '../src/session';
+import { clearToken } from '../src/session';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -15,20 +15,19 @@ export default function HomeScreen() {
   const [displayName, setDisplayName] = useState('');
 
   const load = useCallback(async () => {
-    const token = await getToken();
-    if (!token) { router.replace('/login'); return; }
+    setLoading(true);
     try {
       const [me, records] = await Promise.all([api.me(), api.incidents()]);
       setDisplayName(me.displayName || me.username);
       setIncidents(records.slice(0, 20)); setError('');
-    } catch (e) { setError(e instanceof Error ? e.message : 'Unable to load data.'); }
-    finally { setLoading(false); }
+    } catch (e) {
+      // A missing or rejected token ends the local session: back to sign-in.
+      if (e instanceof ApiError && e.status === 401) { await clearToken(); router.replace('/login'); return; }
+      setError(e instanceof Error ? e.message : 'Unable to load data.');
+    } finally { setLoading(false); }
   }, [router]);
 
   useFocusEffect(useCallback(() => { void load(); }, [load]));
-  useEffect(() => {
-    if (error.includes('Session expired') || error.includes('(401)')) void clearToken().then(() => router.replace('/login'));
-  }, [error, router]);
 
   async function logout() {
     try { await api.logout(); } catch { /* Expired sessions can still be cleared locally. */ }
