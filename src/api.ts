@@ -1,3 +1,5 @@
+import { getToken } from './session';
+
 export type SessionUser = { username: string; displayName: string; role: string };
 export type Incident = {
   id: number;
@@ -8,10 +10,18 @@ export type Incident = {
   affectedService?: string | null;
 };
 
-const configuredUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
-export const API_URL = (configuredUrl || 'http://localhost:5000').replace(/\/$/, '');
+/** Error returned by the S-Aloha API; `status` is 0 when the server could not be reached. */
+export class ApiError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
 
-async function request<T>(path: string, token?: string, init?: RequestInit): Promise<T> {
+const configuredUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
+export const API_URL = (configuredUrl || 'http://localhost:8080').replace(/\/$/, '');
+
+async function request<T>(path: string, token?: string | null, init?: RequestInit): Promise<T> {
   let response: Response;
 
   try {
@@ -25,42 +35,41 @@ async function request<T>(path: string, token?: string, init?: RequestInit): Pro
       },
     });
   } catch {
-    throw new Error(`Unable to reach the API (${API_URL}). Check the address and network.`);
+    throw new ApiError(`Unable to reach the API (${API_URL}). Check the address and network.`, 0);
   }
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({})) as { message?: string };
-    throw new Error(body.message || `API error (${response.status}).`);
+    throw new ApiError(body.message || `API error (${response.status}).`, response.status);
   }
 
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
 
+/** Calls the API with the stored session token; no token is treated as an expired session. */
+async function authorized<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = await getToken();
+  if (!token) throw new ApiError('Session expired.', 401);
+  return request<T>(path, token, init);
+}
+
 export const api = {
-  login: (username: string, password: string) =>
-    request<{ token?: string; username: string; displayName: string; role: string }>('/auth/login', undefined, {
+  login: async (username: string, password: string) => {
+    const result = await request<SessionUser & { token?: string }>('/auth/login', null, {
       method: 'POST',
       body: JSON.stringify({ username, password, returnToken: true }),
-    }).then((result) => {
-      if (!result.token) throw new Error('The API did not return a session token.');
-      return { ...result, token: result.token };
-    }),
-
-  me: async () => {
-    const token = await import('./session').then((session) => session.getToken());
-    if (!token) throw new Error('Session expired.');
-    return request<SessionUser>('/auth/me', token);
+    });
+    if (!result.token) throw new ApiError('The API did not return a session token.', 0);
+    return { ...result, token: result.token };
   },
 
-  incidents: async () => {
-    const token = await import('./session').then((session) => session.getToken());
-    if (!token) throw new Error('Session expired.');
-    return request<Incident[]>('/incidents', token);
-  },
+  me: () => authorized<SessionUser>('/auth/me'),
+
+  incidents: () => authorized<Incident[]>('/incidents'),
 
   logout: async () => {
-    const token = await import('./session').then((session) => session.getToken());
+    const token = await getToken();
     if (token) await request<void>('/auth/logout', token, { method: 'POST' });
   },
 };

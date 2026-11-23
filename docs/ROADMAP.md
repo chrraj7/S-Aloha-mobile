@@ -9,13 +9,14 @@ The following features are already implemented:
 
 - Active Directory sign-in through `POST /api/auth/login`.
 - Session token storage with Expo SecureStore.
-- Session restoration through `GET /api/auth/me`.
+- Session restoration at launch, validated through `GET /api/auth/me`.
 - Sign-out through `POST /api/auth/logout`.
 - Read-only review of recent incidents through `GET /api/incidents`.
 - `Authorization: Bearer` and `X-S-Aloha: 1` API headers.
 - Expo Router navigation with login and home screens.
 - iOS and Android identifiers configured in `app.json`.
-- iOS, Android, and web targets available through Expo.
+- iOS and Android targets through Expo; the web export is a bundling check only (no SecureStore on web).
+- CI pipeline for type checks, Expo dependency alignment, and the web export.
 
 ## 1. Core Features
 
@@ -155,7 +156,7 @@ The following features are already implemented:
 - Error and crash monitoring.
 - Local logging with configurable detail levels.
 - Diagnostic UI without sensitive data.
-- CI pipeline for type checks, tests, and builds.
+- Add the test suites to the CI pipeline.
 - Expo EAS development and staging builds.
 
 ## 9. Administration and Operations
