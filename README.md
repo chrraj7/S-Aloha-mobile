@@ -74,6 +74,8 @@ The web target (`npm run web`, `npm run build`) only proves that the app bundles
 | `npm run build` | Exports the web bundle to `dist/`. |
 | `npm run check` | Runs `typecheck`, `doctor`, and `build`, as the CI does. |
 
+The CI runs `doctor` offline (`EXPO_OFFLINE=1`): it checks the packages against the installed Expo SDK, so a new Expo patch release never fails a pull request. The weekly **Expo updates** workflow runs it online and turns red when newer patch versions are available; update them with `npx expo install --fix`.
+
 ## Organization
 
 ```text

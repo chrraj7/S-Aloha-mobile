@@ -19,6 +19,8 @@ npm run check
 
 Add or upgrade Expo-managed packages with `npx expo install <package>` rather than `npm install`, so versions stay aligned with the SDK, and commit the updated `package-lock.json`.
 
+Run locally, `npm run check` also reports newer Expo patch versions, which the CI ignores (it runs `doctor` offline, `EXPO_OFFLINE=1`). Updating them belongs in a pull request of its own, usually after a red run of the weekly **Expo updates** workflow.
+
 Open a pull request from a branch: `main` is protected and only accepts pull requests whose required checks are green (type-check and build, DCO, workflows, dependency review, hygiene, CodeQL without high alerts), merged with a linear history. Describe the observed and expected behavior. For interface changes, add iOS or Android screenshots when possible. Never attach tokens or secrets; report vulnerabilities as described in the [security policy](SECURITY.md).
 
 ## Developer Certificate of Origin (DCO)

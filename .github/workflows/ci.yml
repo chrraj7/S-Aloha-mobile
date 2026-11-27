@@ -25,6 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_API_URL: http://localhost:8080
+      # Offline, `expo install --check` compares the packages with the versions expected by the
+      # installed SDK (bundledNativeModules.json): reproducible, and still fails on a real
+      # mismatch. Online, it also compares with the latest published patch versions, so every
+      # pull request failed whenever Expo released one. That freshness check runs weekly in
+      # expo-updates.yml.
+      EXPO_OFFLINE: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
