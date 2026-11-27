@@ -7,7 +7,7 @@
 <p align="center"><strong>IT service, everywhere.</strong></p>
 
 <p align="center">
-  Mobile iOS and Android application for <a href="https://github.com/chrraj7/S-Aloha">S-Aloha</a>, the open, on-premises ITIL 4 platform for IT teams.
+  Mobile iOS and Android application for <a href="https://github.com/chrraj7/S-Aloha">S-Aloha</a>, the open, on-premises ITIL platform for IT teams.
 </p>
 
 <p align="center">
