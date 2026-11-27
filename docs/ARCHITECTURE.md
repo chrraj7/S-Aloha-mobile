@@ -62,7 +62,7 @@ npm run check
 npm run start
 ```
 
-The CI (`.github/workflows/ci.yml`) runs `npm ci` and `npm run check` on every push to `main` and every pull request, with the DCO, workflow (actionlint, zizmor), dependency review and hygiene (`scripts/check-hygiene.py`) checks; `.github/workflows/codeql.yml` runs CodeQL, and `.github/workflows/comments.yml` removes automatic footers from published texts (`scripts/remove-footer.py`). These are the checks that `main` requires, as in the parent repository.
+The CI (`.github/workflows/ci.yml`) runs `npm ci` and `npm run check` on every push to `main` and every pull request, with `doctor` offline (`EXPO_OFFLINE=1`, checked against the installed SDK; `.github/workflows/expo-updates.yml` checks online for newer patch versions every Monday), with the DCO, workflow (actionlint, zizmor), dependency review and hygiene (`scripts/check-hygiene.py`) checks; `.github/workflows/codeql.yml` runs CodeQL, and `.github/workflows/comments.yml` removes automatic footers from published texts (`scripts/remove-footer.py`). These are the checks that `main` requires, as in the parent repository.
 
 ## Current Limitations
 
